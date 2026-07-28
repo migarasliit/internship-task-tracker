@@ -47,4 +47,11 @@ public class AuthController {
                 "fullName", user.getFullName()
         ));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        // For JWT, logout is primarily handled by the frontend deleting the token.
+        // This endpoint provides a standard REST response for the requirement.
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully. Please clear your local token."));
+    }
 }

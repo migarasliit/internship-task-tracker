@@ -28,12 +28,19 @@ public class DashboardController {
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Object>> getDashboardStats() {
         long activeInterns = userRepository.countByRoleAndActiveTrue(ERole.ROLE_INTERN);
-        long activeProjects = projectRepository.findAll().stream().filter(p -> p.getStatus() == com.tasktracker.backend.model.EProjectStatus.ACTIVE).count();
+        long activeProjects = projectRepository.findAll().stream()
+                .filter(p -> p.getStatus() == com.tasktracker.backend.model.EProjectStatus.ACTIVE).count();
 
         long pendingTasks = taskRepository.countByStatus(ETaskStatus.TODO);
         long inProgressTasks = taskRepository.countByStatus(ETaskStatus.IN_PROGRESS);
         long submittedTasks = taskRepository.countByStatus(ETaskStatus.SUBMITTED);
         long completedTasks = taskRepository.countByStatus(ETaskStatus.COMPLETED);
+
+        // NEW: Calculate Overdue Tasks (Deadline passed AND not completed)
+        long overdueTasks = taskRepository.findAll().stream()
+                .filter(t -> t.getDeadline().isBefore(java.time.LocalDate.now()) &&
+                        t.getStatus() != ETaskStatus.COMPLETED)
+                .count();
 
         return ResponseEntity.ok(Map.of(
                 "activeInterns", activeInterns,
@@ -41,7 +48,8 @@ public class DashboardController {
                 "pendingTasks", pendingTasks,
                 "inProgressTasks", inProgressTasks,
                 "submittedTasks", submittedTasks,
-                "completedTasks", completedTasks
+                "completedTasks", completedTasks,
+                "overdueTasks", overdueTasks // NEW FIELD
         ));
     }
 }

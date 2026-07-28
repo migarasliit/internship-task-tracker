@@ -2,6 +2,7 @@ package com.tasktracker.backend.service;
 
 import com.tasktracker.backend.dto.CreateTaskRequest;
 import com.tasktracker.backend.exception.ResourceNotFoundException;
+import com.tasktracker.backend.model.EPriority;
 import com.tasktracker.backend.model.ETaskStatus;
 import com.tasktracker.backend.model.Task;
 import com.tasktracker.backend.repository.TaskRepository;
@@ -26,6 +27,7 @@ public class TaskService {
         task.setAssignedInternId(request.getAssignedInternId());
         task.setDeadline(request.getDeadline());
         task.setStatus(ETaskStatus.TODO); // Default status
+        task.setPriority(request.getPriority() != null ? request.getPriority() : EPriority.MEDIUM); // Default to MEDIUM
 
         return taskRepository.save(task);
     }

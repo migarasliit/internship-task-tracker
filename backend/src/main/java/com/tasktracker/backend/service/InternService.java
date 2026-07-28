@@ -57,4 +57,12 @@ public class InternService {
         intern.setActive(isActive);
         return userRepository.save(intern);
     }
+
+    // Update intern profile
+    public User updateIntern(String id, CreateInternRequest request) {
+        User intern = getInternById(id);
+        intern.setFullName(request.getFullName());
+        // We intentionally do not update email/password here to keep it simple and secure
+        return userRepository.save(intern);
+    }
 }
