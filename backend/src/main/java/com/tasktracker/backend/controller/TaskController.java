@@ -54,4 +54,16 @@ public class TaskController {
             @RequestParam String submissionLink) {
         return ResponseEntity.ok(taskService.submitTask(id, submissionLink));
     }
+
+    // Admin provides feedback and updates task status (COMPLETED or REVISION_REQUIRED)
+    @PatchMapping("/admin/{id}/feedback")
+    public ResponseEntity<Task> provideTaskFeedback(
+            @PathVariable String id,
+            @RequestParam String feedback,
+            @RequestParam ETaskStatus newStatus) {
+
+        // We delegate the business logic to the TaskService!
+        Task updatedTask = taskService.provideFeedback(id, feedback, newStatus);
+        return ResponseEntity.ok(updatedTask);
+    }
 }

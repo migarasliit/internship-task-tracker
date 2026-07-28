@@ -52,4 +52,15 @@ public class TaskService {
         task.setStatus(ETaskStatus.SUBMITTED);
         return taskRepository.save(task);
     }
+
+    // Admin provides feedback and updates task status
+    public Task provideFeedback(String id, String feedback, ETaskStatus newStatus) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+
+        task.setSupervisorFeedback(feedback);
+        task.setStatus(newStatus);
+
+        return taskRepository.save(task);
+    }
 }
