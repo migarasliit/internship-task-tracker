@@ -1,19 +1,17 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
+import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// Placeholder pages (We will build the real ones next)
-const AdminDashboard = () => <div className="p-8 text-2xl font-bold">Admin Dashboard (Coming Soon)</div>;
+// Placeholder for Intern Dashboard (We will build this next)
 const InternDashboard = () => <div className="p-8 text-2xl font-bold">Intern Dashboard (Coming Soon)</div>;
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Route */}
         <Route path="/login" element={<Login />} />
 
-        {/* Admin Protected Routes */}
         <Route 
           path="/admin/dashboard" 
           element={
@@ -23,7 +21,6 @@ function App() {
           } 
         />
 
-        {/* Intern Protected Routes */}
         <Route 
           path="/intern/dashboard" 
           element={
@@ -33,7 +30,6 @@ function App() {
           } 
         />
 
-        {/* Default redirect to login */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
