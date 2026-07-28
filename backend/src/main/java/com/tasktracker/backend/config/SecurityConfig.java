@@ -29,11 +29,21 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // 1. Public endpoints (No token required)
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/health").permitAll()
+
+                        // 2. Admin-only endpoints
+                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/tasks/admin").hasAuthority("ROLE_ADMIN")
+
+                        // 3. Intern-only endpoints
+                        .requestMatchers("/api/tasks/intern/**").hasAuthority("ROLE_INTERN")
+                        .requestMatchers("/api/tasks/*/submit").hasAuthority("ROLE_INTERN")
+
+                        // 4. All other endpoints require a valid token (Admin or Intern)
                         .anyRequest().authenticated()
                 )
-                // Add the JWT filter before the default UsernamePassword filter
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
