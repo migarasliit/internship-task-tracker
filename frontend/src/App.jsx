@@ -4,6 +4,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import InternList from './pages/InternList'; // 
 import ProtectedRoute from './components/ProtectedRoute';
 import ProjectList from './pages/ProjectList'; // Import ProjectList component
+import TaskList from './pages/TaskList'; // Import TaskList component
 
 // Placeholder for Intern Dashboard (We will build this next)
 const InternDashboard = () => <div className="p-8 text-2xl font-bold">Intern Dashboard (Coming Soon)</div>;
@@ -39,6 +40,16 @@ function App() {
         </ProtectedRoute>
       } 
     />
+
+         <Route 
+         path="/admin/tasks" 
+         element={
+         <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+           <TaskList />
+         </ProtectedRoute>
+        }
+      />
+
 
  
         <Route 
