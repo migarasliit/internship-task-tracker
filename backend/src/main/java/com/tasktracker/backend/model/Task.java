@@ -22,4 +22,5 @@ public class Task {
     private LocalDate deadline;
     private String submissionLink; // For intern to submit work
     private String supervisorFeedback; // For admin to give feedback
+    private EPriority priority;
 }

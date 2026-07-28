@@ -21,4 +21,6 @@ public class CreateTaskRequest {
 
     @NotNull(message = "Deadline is required")
     private LocalDate deadline;
+
+    private com.tasktracker.backend.model.EPriority priority;
 }

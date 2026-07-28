@@ -49,4 +49,27 @@ public class InternController {
         User updatedIntern = internService.updateInternStatus(id, active);
         return ResponseEntity.ok(updatedIntern);
     }
+
+    // EDIT: Update intern profile
+    // EDIT: Update intern profile
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateIntern(
+            @PathVariable String id,
+            @Valid @RequestBody CreateInternRequest request) {
+
+        // Delegate the update logic to the InternService!
+        User updatedIntern = internService.updateIntern(id, request);
+        return ResponseEntity.ok(updatedIntern);
+    }
+
+    // SEARCH: Filter interns by name or email
+    @GetMapping("/search")
+    public ResponseEntity<List<User>> searchInterns(@RequestParam String keyword) {
+        List<User> allInterns = internService.getAllInterns();
+        List<User> filtered = allInterns.stream()
+                .filter(u -> u.getFullName().toLowerCase().contains(keyword.toLowerCase()) ||
+                        u.getEmail().toLowerCase().contains(keyword.toLowerCase()))
+                .collect(java.util.stream.Collectors.toList());
+        return ResponseEntity.ok(filtered);
+    }
 }
