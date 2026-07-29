@@ -7,6 +7,7 @@ import ProjectList from './pages/ProjectList'; // Import ProjectList component
 import TaskList from './pages/TaskList'; // Import TaskList component
 import InternDashboard from './pages/InternDashboard'; // Import InternDashboard component
 import InternTaskList from './pages/InternTaskList'; // Import InternTaskList component
+import InternLogs from './pages/InternWorkLogs'; // Import InternLogs component
 
  
 
@@ -71,6 +72,14 @@ function App() {
           } 
         />
 
+       <Route 
+        path="/intern/logs"
+        element={
+         <ProtectedRoute allowedRoles={['ROLE_INTERN']}>
+           <InternLogs />
+           </ProtectedRoute>
+          }
+        />
 
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
