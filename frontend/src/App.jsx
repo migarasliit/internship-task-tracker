@@ -5,6 +5,7 @@ import InternList from './pages/InternList'; //
 import ProtectedRoute from './components/ProtectedRoute';
 import ProjectList from './pages/ProjectList'; // Import ProjectList component
 import TaskList from './pages/TaskList'; // Import TaskList component
+import AdminWorkLogs from './pages/AdminWorkLogs'; // Import AdminWorkLogs component
 import InternDashboard from './pages/InternDashboard'; // Import InternDashboard component
 import InternTaskList from './pages/InternTaskList'; // Import InternTaskList component
 import InternLogs from './pages/InternWorkLogs'; // Import InternLogs component
@@ -51,6 +52,16 @@ function App() {
          </ProtectedRoute>
         }
       />
+
+        <Route 
+        path="/admin/logs" 
+        element={
+         <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+          <AdminWorkLogs />
+        </ProtectedRoute>
+      }
+      />
+
 
 
  
