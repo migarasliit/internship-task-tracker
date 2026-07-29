@@ -44,4 +44,17 @@ public class ProjectService {
         project.setStatus(status);
         return projectRepository.save(project);
     }
+
+    public Project updateProject(String id, CreateProjectRequest request) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+
+        project.setTitle(request.getTitle());
+        project.setDescription(request.getDescription());
+        project.setTechnologyStack(request.getTechnologyStack());
+        project.setDeadline(request.getDeadline());
+        project.setAssignedInternIds(request.getAssignedInternIds());
+
+        return projectRepository.save(project);
+    }
 }
