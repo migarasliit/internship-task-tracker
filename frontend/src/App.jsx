@@ -9,7 +9,7 @@ import AdminWorkLogs from './pages/AdminWorkLogs'; // Import AdminWorkLogs compo
 import InternDashboard from './pages/InternDashboard'; // Import InternDashboard component
 import InternTaskList from './pages/InternTaskList'; // Import InternTaskList component
 import InternLogs from './pages/InternWorkLogs'; // Import InternLogs component
-
+import InternProfile from './pages/InternProfile'; // Import InternProfile component
  
 
 function App() {
@@ -92,6 +92,14 @@ function App() {
           }
         />
 
+       <Route 
+       path="/intern/profile" 
+       element={
+         <ProtectedRoute allowedRoles={['ROLE_INTERN']}>
+          <InternProfile />
+        </ProtectedRoute>
+         } 
+      /> 
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>

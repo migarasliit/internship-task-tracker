@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import api from '../services/api';
-import { Users, FolderKanban, Clock, CheckCircle, AlertTriangle, Loader2 } from 'lucide-react';
+import { Users, FolderKanban, Clock, CheckCircle, AlertTriangle, Loader2, Activity } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
+  const [activities, setActivities] = useState([]); // <-- 1. ADDED STATE HERE
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,16 +15,22 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await api.get('/dashboard/stats');
-      setStats(response.data);
+      // 2. FETCH BOTH STATS AND ACTIVITY AT THE SAME TIME
+      const [statsRes, activityRes] = await Promise.all([
+        api.get('/dashboard/stats'),
+        api.get('/dashboard/recent-activity')
+      ]);
+      
+      setStats(statsRes.data);
+      setActivities(activityRes.data); // <-- 3. SET ACTIVITIES HERE
     } catch (error) {
-      toast.error('Failed to load dashboard stats');
+      toast.error('Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
   };
 
-   if (loading) {
+  if (loading) {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center h-96">
@@ -82,9 +89,24 @@ const AdminDashboard = () => {
           })}
         </div>
 
+        {/* 4. CLEANED UP RECENT ACTIVITY FEED */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
-          <p className="text-gray-500 text-sm">Activity feed will be populated here as interns submit work and admins assign tasks.</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <Activity size={20} className="text-primary" />
+            Recent Activity
+          </h3>
+          <div className="space-y-3">
+            {activities.length > 0 ? (
+              activities.map((activity, index) => (
+                <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg border border-gray-100">
+                  <div className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${activity.type === 'Task' ? 'bg-blue-500' : 'bg-green-500'}`}></div>
+                  <p className="text-sm text-gray-700">{activity.message}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 text-sm italic">No recent activity to display yet.</p>
+            )}
+          </div>
         </div>
       </div>
     </AdminLayout>
