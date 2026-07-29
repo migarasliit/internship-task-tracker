@@ -66,21 +66,23 @@ const AdminWorkLogs = () => {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Work Log Reviews</h1>
-          <p className="text-gray-500 mt-1">Review intern daily logs and provide supervisor feedback.</p>
+      <div className="space-y-4 sm:space-y-6">
+        {/* Header - Responsive */}
+        <div className="space-y-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Work Log Reviews</h1>
+          <p className="text-sm sm:text-base text-gray-500">Review intern daily logs and provide supervisor feedback.</p>
         </div>
 
-        {/* Intern Selector */}
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center gap-4">
-          <User size={20} className="text-gray-500" />
-          <label className="text-sm font-medium text-gray-700">Select Intern:</label>
+        {/* Intern Selector - Full width on mobile */}
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <User size={16} className="inline mr-1 mb-0.5" />
+            Select Intern:
+          </label>
           <select 
             value={selectedInternId} 
             onChange={(e) => setSelectedInternId(e.target.value)}
-            className="flex-1 max-w-md px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-gray-50"
+            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none bg-gray-50 text-sm sm:text-base"
           >
             {interns.map(intern => (
               <option key={intern.id} value={intern.id}>{intern.fullName} ({intern.email})</option>
@@ -97,66 +99,85 @@ const AdminWorkLogs = () => {
           <div className="space-y-4">
             {logs.map((log) => (
               <div key={log.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                {/* Log Header */}
-                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                {/* Log Header - Responsive */}
+                <div className="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <FileText size={18} className="text-primary" />
-                    <span className="font-bold text-gray-800">{log.logDate}</span>
+                    <FileText size={16} className="text-primary flex-shrink-0" />
+                    <span className="font-bold text-gray-800 text-sm sm:text-base">{log.logDate}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-sm font-medium text-gray-600 bg-white px-3 py-1 rounded-full border border-gray-200">
-                    <Clock size={14} /> {log.hoursWorked} Hours
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-gray-600 bg-white px-3 py-1.5 rounded-full border border-gray-200 self-start sm:self-auto">
+                    <Clock size={12} className="flex-shrink-0" /> 
+                    <span>{log.hoursWorked} Hours</span>
                   </div>
                 </div>
 
-                {/* Log Content */}
-                <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Log Content - Stack on mobile */}
+                <div className="p-4 sm:p-6 space-y-4">
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Completed Work</p>
-                    <p className="text-gray-800 text-sm bg-green-50 p-3 rounded-lg border border-green-100 min-h-[60px]">{log.completedWork}</p>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Completed Work</p>
+                    <p className="text-gray-800 text-sm bg-green-50 p-3 rounded-lg border border-green-100">{log.completedWork}</p>
                   </div>
+                  
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Current / Next Day Plan</p>
-                    <p className="text-gray-800 text-sm bg-blue-50 p-3 rounded-lg border border-blue-100 min-h-[60px]">{log.currentWork} <br/> <span className="text-gray-500 text-xs mt-1 block">Next: {log.nextDayPlan}</span></p>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Current / Next Day Plan</p>
+                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                      <p className="text-gray-800 text-sm">{log.currentWork}</p>
+                      <p className="text-gray-500 text-xs mt-2 pt-2 border-t border-blue-100">
+                        <span className="font-medium">Next:</span> {log.nextDayPlan}
+                      </p>
+                    </div>
                   </div>
+                  
                   {log.challenges && (
-                    <div className="md:col-span-2">
-                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Challenges Faced</p>
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Challenges Faced</p>
                       <p className="text-gray-800 text-sm bg-red-50 p-3 rounded-lg border border-red-100">{log.challenges}</p>
                     </div>
                   )}
                 </div>
 
-                {/* Supervisor Feedback Section */}
-                <div className="px-6 pb-6">
+                {/* Supervisor Feedback Section - Responsive */}
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 border-t border-gray-100">
                   {log.supervisorComment ? (
-                    <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
-                      <p className="flex items-center gap-2 text-sm font-bold text-indigo-800 mb-2">
-                        <MessageSquare size={16} /> Supervisor Feedback:
+                    <div className="bg-indigo-50 p-3 sm:p-4 rounded-lg border border-indigo-100">
+                      <p className="flex items-start gap-2 text-xs sm:text-sm font-bold text-indigo-800 mb-2">
+                        <MessageSquare size={14} className="flex-shrink-0 mt-0.5" /> 
+                        <span>Supervisor Feedback:</span>
                       </p>
-                      <p className="text-sm text-indigo-900">{log.supervisorComment}</p>
+                      <p className="text-xs sm:text-sm text-indigo-900 leading-relaxed">{log.supervisorComment}</p>
                     </div>
                   ) : (
                     <div>
                       {activeLogId === log.id ? (
                         <div className="space-y-3">
                           <textarea 
-                            rows="2" 
+                            rows="3"
                             value={commentText} 
                             onChange={(e) => setCommentText(e.target.value)}
                             placeholder="Write your feedback for the intern..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"
+                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-sm resize-none"
                           />
-                          <div className="flex gap-2">
-                            <button onClick={() => setActiveLogId(null)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-50 transition">Cancel</button>
-                            <button onClick={() => handleAddComment(log.id)} disabled={isSubmitting} className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-blue-700 transition disabled:opacity-70 flex items-center gap-2">
-                              {isSubmitting ? <Loader2 className="animate-spin" size={14} /> : <Send size={14} />} Send Feedback
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <button 
+                              onClick={() => setActiveLogId(null)} 
+                              className="w-full sm:w-auto px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
+                            >
+                              Cancel
+                            </button>
+                            <button 
+                              onClick={() => handleAddComment(log.id)} 
+                              disabled={isSubmitting} 
+                              className="w-full sm:flex-1 px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition disabled:opacity-70 flex items-center justify-center gap-2"
+                            >
+                              {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />} 
+                              Send Feedback
                             </button>
                           </div>
                         </div>
                       ) : (
                         <button 
                           onClick={() => { setActiveLogId(log.id); setCommentText(''); }}
-                          className="flex items-center gap-2 text-sm font-medium text-primary hover:text-blue-700 transition"
+                          className="w-full sm:w-auto flex items-center justify-center gap-2 text-sm font-medium text-primary hover:text-blue-700 transition px-4 py-2.5 rounded-lg hover:bg-blue-50"
                         >
                           <MessageSquare size={16} /> Add Feedback
                         </button>
@@ -170,7 +191,7 @@ const AdminWorkLogs = () => {
         ) : (
           <div className="text-center py-12 bg-white rounded-xl border border-gray-200 border-dashed">
             <FileText size={48} className="mx-auto text-gray-300 mb-3" />
-            <p className="text-gray-500">
+            <p className="text-gray-500 text-sm sm:text-base px-4">
               {selectedInternId ? 'This intern has not submitted any logs yet.' : 'Select an intern to view logs.'}
             </p>
           </div>
