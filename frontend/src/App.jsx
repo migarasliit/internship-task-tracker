@@ -5,9 +5,10 @@ import InternList from './pages/InternList'; //
 import ProtectedRoute from './components/ProtectedRoute';
 import ProjectList from './pages/ProjectList'; // Import ProjectList component
 import TaskList from './pages/TaskList'; // Import TaskList component
+import InternDashboard from './pages/InternDashboard'; // Import InternDashboard component
+import InternTaskList from './pages/InternTaskList'; // Import InternTaskList component
 
-// Placeholder for Intern Dashboard (We will build this next)
-const InternDashboard = () => <div className="p-8 text-2xl font-bold">Intern Dashboard (Coming Soon)</div>;
+ 
 
 function App() {
   return (
@@ -60,6 +61,16 @@ function App() {
             </ProtectedRoute>
           } 
         />
+
+        <Route 
+         path="/intern/tasks" 
+         element={
+          <ProtectedRoute allowedRoles={['ROLE_INTERN']}>
+           <InternTaskList />
+          </ProtectedRoute>
+          } 
+        />
+
 
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

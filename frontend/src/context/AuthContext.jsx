@@ -29,13 +29,13 @@ export const AuthProvider = ({ children }) => {
         password,
       });
 
-      const { token: newToken, role, fullName } = response.data;
+      const { token: newToken, id,role, fullName } = response.data;
       
       localStorage.setItem('token', newToken);
-      localStorage.setItem('user', JSON.stringify({ email, role, fullName }));
+      localStorage.setItem('user', JSON.stringify({ id,email, role, fullName }));
       
       setToken(newToken);
-      setUser({ email, role, fullName });
+      setUser({id, email, role, fullName });
       axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
       
       toast.success('Login successful!');
