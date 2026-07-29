@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Users, FolderKanban, CheckSquare, FileText, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, FolderKanban, CheckSquare, FileText, LogOut, UserCircle } from 'lucide-react';
 
 const Sidebar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -19,6 +19,8 @@ const Sidebar = () => {
     { name: 'Dashboard', path: '/intern/dashboard', icon: LayoutDashboard },
     { name: 'My Tasks', path: '/intern/tasks', icon: CheckSquare },
     { name: 'Daily Logs', path: '/intern/logs', icon: FileText },
+    { name: 'My Profile', path: '/intern/profile', icon: UserCircle },
+
   ];
 
   const links = user?.role === 'ROLE_ADMIN' ? adminLinks : internLinks;
