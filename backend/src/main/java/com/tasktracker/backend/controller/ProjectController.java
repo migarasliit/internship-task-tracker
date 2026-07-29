@@ -42,4 +42,11 @@ public class ProjectController {
             @RequestParam EProjectStatus status) {
         return ResponseEntity.ok(projectService.updateProjectStatus(id, status));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Project> updateProject(
+            @PathVariable String id,
+            @Valid @RequestBody CreateProjectRequest request) {
+        return ResponseEntity.ok(projectService.updateProject(id, request));
+    }
 }
