@@ -3,10 +3,12 @@ import AdminLayout from '../components/AdminLayout';
 import api from '../services/api';
 import { Users, FolderKanban, Clock, CheckCircle, AlertTriangle, Loader2, Activity } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
-  const [activities, setActivities] = useState([]); // <-- 1. ADDED STATE HERE
+  const [activities, setActivities] = useState([]); 
+  const [chartData, setChartData] = useState({ taskDistribution: [], internActivity: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,21 +16,48 @@ const AdminDashboard = () => {
   }, []);
 
   const fetchStats = async () => {
-    try {
-      // 2. FETCH BOTH STATS AND ACTIVITY AT THE SAME TIME
-      const [statsRes, activityRes] = await Promise.all([
-        api.get('/dashboard/stats'),
-        api.get('/dashboard/recent-activity')
-      ]);
-      
-      setStats(statsRes.data);
-      setActivities(activityRes.data); // <-- 3. SET ACTIVITIES HERE
-    } catch (error) {
-      toast.error('Failed to load dashboard data');
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const [statsRes, activityRes, tasksRes, internsRes] = await Promise.all([
+      api.get('/dashboard/stats'),
+      api.get('/dashboard/recent-activity'),
+      api.get('/tasks/admin'),
+      api.get('/admin/interns')
+    ]);
+    
+    setStats(statsRes.data);
+    setActivities(activityRes.data);
+    
+    // Prepare Task Distribution Data for Pie Chart
+    const tasks = tasksRes.data;
+    const taskDist = [
+      { name: 'TODO', value: tasks.filter(t => t.status === 'TODO').length },
+      { name: 'In Progress', value: tasks.filter(t => t.status === 'IN_PROGRESS').length },
+      { name: 'Submitted', value: tasks.filter(t => t.status === 'SUBMITTED').length },
+      { name: 'Completed', value: tasks.filter(t => t.status === 'COMPLETED').length },
+      { name: 'Revision', value: tasks.filter(t => t.status === 'REVISION_REQUIRED').length },
+    ];
+    
+    // Prepare Intern Activity Data for Bar Chart
+    const interns = internsRes.data.filter(u => u.role === 'ROLE_INTERN');
+    const internActivity = await Promise.all(
+      interns.map(async (intern) => {
+        const internTasks = tasks.filter(t => t.assignedInternId === intern.id);
+        return {
+          name: intern.fullName.split(' ')[0], // First name only
+          tasks: internTasks.length,
+          completed: internTasks.filter(t => t.status === 'COMPLETED').length
+        };
+      })
+    );
+    
+    setChartData({ taskDistribution: taskDist, internActivity });
+    
+  } catch (error) {
+    toast.error('Failed to load dashboard data');
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (loading) {
     return (
@@ -87,6 +116,58 @@ const AdminDashboard = () => {
               </div>
             );
           })}
+        </div>
+
+                {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Task Distribution Pie Chart */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Task Distribution</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={chartData.taskDistribution}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  <Cell fill="#9ca3af" /> {/* TODO - Gray */}
+                  <Cell fill="#3b82f6" /> {/* In Progress - Blue */}
+                  <Cell fill="#f59e0b" /> {/* Submitted - Yellow */}
+                  <Cell fill="#10b981" /> {/* Completed - Green */}
+                  <Cell fill="#ef4444" /> {/* Revision - Red */}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Intern Activity Bar Chart */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Intern Performance</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={chartData.internActivity}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis dataKey="name" stroke="#9ca3af" />
+                <YAxis stroke="#9ca3af" />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1f2937', 
+                    border: 'none', 
+                    borderRadius: '8px',
+                    color: '#f9fafb'
+                  }} 
+                />
+                <Legend />
+                <Bar dataKey="tasks" name="Total Tasks" fill="#3b82f6" />
+                <Bar dataKey="completed" name="Completed" fill="#10b981" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         {/* 4. CLEANED UP RECENT ACTIVITY FEED */}
