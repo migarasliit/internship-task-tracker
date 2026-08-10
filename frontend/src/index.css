@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add a nice default font and background */
+body {
+  @apply bg-gray-50 text-gray-900 antialiased;
+}
+
+/* =========================================
+   COMPREHENSIVE SOFT DARK MODE (Zinc Palette)
+   ========================================= */
+
+/* 1. Base Body Background - Soft Dark Gray (Not pure black) */
+.dark body {
+  background-color: #18181b !important; /* Zinc 900 - Very soft dark */
+  color: #e4e4e7 !important; /* Zinc 200 - Soft white text */
+}
+
+/* 2. Cards and Containers - Slightly lighter soft gray */
+.dark .bg-white, 
+.dark .bg-gray-50, 
+.dark .bg-gray-100 {
+  background-color: #27272a !important; /* Zinc 800 */
+}
+
+/* 3. Fix ALL Invisible Text - Force dark text to be light */
+.dark .text-black, 
+.dark .text-gray-900, 
+.dark .text-gray-800, 
+.dark .text-gray-700 {
+  color: #f4f4f5 !important; /* Zinc 100 - Brightest text */
+}
+
+/* 4. Fix Muted Text - Make it readable but not too bright */
+.dark .text-gray-600, 
+.dark .text-gray-500 {
+  color: #a1a1aa !important; /* Zinc 400 - Muted text */
+}
+
+/* 5. Fix Very Light Text */
+.dark .text-gray-400, 
+.dark .text-gray-300 {
+  color: #d4d4d8 !important; /* Zinc 300 */
+}
+
+/* 6. Fix Borders - Soft dark borders */
+.dark .border-gray-200, 
+.dark .border-gray-300, 
+.dark .border-gray-100 {
+  border-color: #3f3f46 !important; /* Zinc 700 */
+}
+
+/* 7. Fix Form Inputs (Crucial for text visibility inside boxes) */
+.dark input, 
+.dark textarea, 
+.dark select {
+  background-color: #27272a !important; /* Zinc 800 */
+  color: #f4f4f5 !important; /* Zinc 100 */
+  border-color: #3f3f46 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #71717a !important; /* Zinc 500 */
+}
+
+/* 8. Fix Hover States for Tables and Lists */
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-100:hover {
+  background-color: #3f3f46 !important; /* Zinc 700 */
+}
+
+/* 9. Fix Scrollbars for a premium look */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #18181b;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}
